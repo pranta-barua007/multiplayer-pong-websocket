@@ -1,30 +1,18 @@
+const http = require('http');
+const io = require('socket.io');
+
 const apiServer = require('./api');
-const server = require('http').createServer(apiServer);
-const io = require('socket.io')(server);
+const httpServer = http.createServer(apiServer);
+const socketServer = io(httpServer);
 
-const PORT = 3000;
+const sockets = require('./sockets');
 
-server.listen(PORT, () => {
+const PORT = 3000 || process.env.PORT;
+httpServer.listen(PORT, () => {
     console.log(`Running on http://localhost:${PORT}`);
 });
 
-let readyPlayerCount = 0;
+sockets.listen(socketServer);
 
-io.on('connection', (socket) => {
-    console.log('a user connected', socket.id);
 
-    socket.on('ready', () => {
-        console.log(`Player ready ${socket.id}`);
 
-        readyPlayerCount += 1;
-
-        if(readyPlayerCount === 2) {
-            //Broadcast 'startGame'
-            io.emit('startGame', socket.id);
-        }
-    });
-
-    socket.on('paddleMove', (paddleData) => {
-        socket.broadcast.emit('paddleMove', paddleData);
-    });
-});
