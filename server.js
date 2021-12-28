@@ -7,9 +7,9 @@ const socketServer = io(httpServer);
 
 const sockets = require('./sockets');
 
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
-    console.log(`Running on http://localhost:${PORT}`);
+    console.log(`Running on ${PORT},,,`);
 });
 
 sockets.listen(socketServer);
